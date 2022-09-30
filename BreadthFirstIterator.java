@@ -2,6 +2,13 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.Iterator;
 
+/**
+ * A generic Breadth First Iterator.
+ * 
+ * @author Michael A. Smith
+ * @version 1.0
+ * @since 5/22/2022
+ */
 class BreadthFirstIterator<V> implements Iterator<V> {
     LinkedList<V> queue = new LinkedList<V>();
     ArrayList<V> visited = new ArrayList<V>();
