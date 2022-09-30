@@ -2,6 +2,13 @@ import java.util.ArrayList;
 import java.util.Stack;
 import java.util.Iterator;
 
+/**
+ * A generic Depth First Iterator.
+ * 
+ * @author Michael A. Smith
+ * @version 1.0
+ * @since 5/22/2022
+ */
 class DepthFirstIterator<V> implements Iterator<V> {
     Stack<V> stack = new Stack<V>();
     ArrayList<V> visited = new ArrayList<V>();
