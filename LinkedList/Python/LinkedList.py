@@ -25,6 +25,7 @@ class LinkedList:
         while(current_node != None):
             output += str(current_node) + " "
             current_node = current_node.next
+        
         return output
     
     # Add @ head
@@ -102,6 +103,7 @@ class LinkedList:
     def pop (self):
         popped = self.head.next
         self.head = self.head.next
+        
         return popped
     
     # Remove at a index
@@ -116,9 +118,14 @@ class LinkedList:
         if self.head is None:
             print("Linked list is empty")
             return
+
+        if(index >= self.size()):
+            print("Index out of bounds")
+            return
         
         if(index == 0):
             return self.pop()
+
         node = self.get(index - 1)
         removed = node.next
         
@@ -127,6 +134,7 @@ class LinkedList:
             return removed
         
         node.next = node.next.next
+        
         return removed
     
     # A mwthod to clear the list
