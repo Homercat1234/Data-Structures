@@ -26,6 +26,12 @@ public:
   const T &operator[](int index) const;
   vector<T> &operator=(vector<T> &other);
   vector<T> &operator=(vector<T> &&other);
+  bool operator==(const vector<T>& other) const;
+  bool operator!=(const vector<T>& other) const;
+  bool operator<(const vector<T>& other) const;
+  bool operator<=(const vector<T>& other) const;
+  bool operator>(const vector<T>& other) const;
+  bool operator>=(const vector<T>& other) const;
   string to_string() const;
 };
 
@@ -36,17 +42,17 @@ template <typename T> vector<T>::vector() {
 }
 
 template <typename T> vector<T>::vector(vector<T> &other) {
-  arr = new T[other.getcapacity()];
-  currentSize = other.size();
-  capacity = other.getcapacity();
+  arr = new T[other.capacity];
+  currentSize = other.currentSize;
+  capacity = other.capacity;
   for(int i = 0; i < currentSize; ++i)
     arr[i] = other[i];
 }
 
 template <typename T> vector<T>::vector(vector<T>&& other) {
-  arr = other.getarr();
-  capacity = other.getcapacity();
-  currentSize = other.size();
+  arr = other.arr;
+  capacity = other.capacity;
+  currentSize = other.currentSize;
   other.arr = nullptr;
   other.currentSize = 0;
   other.capacity = 0;
@@ -139,8 +145,8 @@ template <typename T> const T &vector<T>::operator[](int index) const {
 
 template <typename T> vector<T> &vector<T>::operator=(vector<T> &other) {
   delete arr;
-  capacity = other.getcapacity();
-  currentSize = other.size();
+  capacity = other.capacity;
+  currentSize = other.currentSize;
   arr = new T[capacity];
   for(int i = 0; i < currentSize; ++i)
     arr[i] = other[i];
@@ -149,15 +155,46 @@ template <typename T> vector<T> &vector<T>::operator=(vector<T> &other) {
 
 template <typename T> vector<T> &vector<T>::operator=(vector<T> &&other) {
   delete arr;
-  capacity = other.getcapacity();
-  currentSize = other.size();
+  capacity = other.capacity;
+  currentSize = other.currentSize;
   arr = new T[capacity];
   for(int i = 0; i < currentSize; ++i)
     arr[i] = other[i];
-  other.getarr() = nullptr;
+  other.arr = nullptr;
   other.currentSize = 0;
   other.capacity = 0;
   return *this;
+}
+
+template <typename T> bool vector<T>::operator==(const vector<T>& other) const {
+  if(currentSize != other.currentSize) return false;
+  for(int i = 0; i < currentSize; ++i)
+    if(arr[i] != other[i])
+      return false;
+  return true;
+}
+
+template <typename T> bool vector<T>::operator!=(const vector<T>& other) const {
+  return !(*this == other);
+}
+
+template <typename T> bool vector<T>::operator<(const vector<T>& other) const {
+  if(currentSize != other.currentSize) return currentSize < other.currentSize;
+  for(int i = 0; i < currentSize; ++i)
+    if(arr[i] < other[i])
+      return true;
+  return false;
+}
+template <typename T> bool vector<T>::operator<=(const vector<T>& other) const {
+  return !(other < *this);
+}
+
+template <typename T> bool vector<T>:: operator>(const vector<T>& other) const {
+  return other < *this;
+}
+
+template <typename T> bool vector<T>::operator>=(const vector<T>& other) const {
+  return !(other > *this);
 }
 
 template <typename T> string vector<T>::to_string() const {
@@ -167,8 +204,8 @@ template <typename T> string vector<T>::to_string() const {
     strstream << arr[i];
     if (i < currentSize - 1) {
       strstream << ", ";
-      }
     }
-    strstream << "]";
-    return strstream.str();
+  }
+  strstream << "]";
+  return strstream.str();
 }
