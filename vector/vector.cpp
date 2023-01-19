@@ -1,3 +1,6 @@
+#include <string>
+#include <iostream>
+#include <sstream>
 using namespace std;
 
 template <typename T> class vector {
@@ -7,6 +10,9 @@ template <typename T> class vector {
 
 public:
   vector();
+  vector(vector<T> &other);
+  vector(vector<T> && other);
+  vector(initializer_list<T> list);
   ~vector();
   void push_back(T element);
   void insert(T element, int index);
@@ -14,15 +20,47 @@ public:
   void pop();
   long long size();
   T get(int index);
+  T* getarr();
   long long getcapacity();
   T &operator[](int index);
   const T &operator[](int index) const;
+  vector<T> &operator=(vector<T> &other);
+  vector<T> &operator=(vector<T> &&other);
+  string to_string() const;
 };
 
 template <typename T> vector<T>::vector() {
   arr = new T[1];
   currentSize = 0;
   capacity = 1;
+}
+
+template <typename T> vector<T>::vector(vector<T> &other) {
+  arr = new T[other.getcapacity()];
+  currentSize = other.size();
+  capacity = other.getcapacity();
+  for(int i = 0; i < currentSize; ++i)
+    arr[i] = other[i];
+}
+
+template <typename T> vector<T>::vector(vector<T>&& other) {
+  arr = other.getarr();
+  capacity = other.getcapacity();
+  currentSize = other.size();
+  other.arr = nullptr;
+  other.currentSize = 0;
+  other.capacity = 0;
+}
+
+template <typename T> vector<T>::vector(initializer_list<T> list) {
+  arr = new T[list.size()];
+  currentSize = list.size();
+  capacity = list.size();
+  int i = 0;
+  for (auto &elem : list) {
+    arr[i] = elem;
+    i++;
+  }
 }
 
 template <typename T> vector<T>::~vector() { delete arr; }
@@ -81,6 +119,10 @@ template <typename T> void vector<T>::emplace_back(T &&element) {
 
 template <typename T> long long vector<T>::getcapacity() { return capacity; }
 
+template <typename T> T* vector<T>::getarr() {
+  return arr;
+}
+
 template <typename T> T &vector<T>::operator[](int index) {
   if (index >= currentSize) {
     throw out_of_range("Index out of range");
@@ -93,4 +135,40 @@ template <typename T> const T &vector<T>::operator[](int index) const {
     throw out_of_range("Index out of range");
   }
   return arr[index];
+}
+
+template <typename T> vector<T> &vector<T>::operator=(vector<T> &other) {
+  delete arr;
+  capacity = other.getcapacity();
+  currentSize = other.size();
+  arr = new T[capacity];
+  for(int i = 0; i < currentSize; ++i)
+    arr[i] = other[i];
+  return *this;
+}
+
+template <typename T> vector<T> &vector<T>::operator=(vector<T> &&other) {
+  delete arr;
+  capacity = other.getcapacity();
+  currentSize = other.size();
+  arr = new T[capacity];
+  for(int i = 0; i < currentSize; ++i)
+    arr[i] = other[i];
+  other.getarr() = nullptr;
+  other.currentSize = 0;
+  other.capacity = 0;
+  return *this;
+}
+
+template <typename T> string vector<T>::to_string() const {
+  stringstream strstream;
+  strstream << "[";
+  for (int i = 0; i < currentSize; ++i) {
+    strstream << arr[i];
+    if (i < currentSize - 1) {
+      strstream << ", ";
+      }
+    }
+    strstream << "]";
+    return strstream.str();
 }
